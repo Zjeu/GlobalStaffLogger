@@ -19,11 +19,18 @@ Log when a player switches between servers (via command, portal, or plugin) or w
 - **Log Format:** `{player} switched from {server} to {server}`
 - **Example:** `Azady switched from Lobby to Practice`
 
-### 4. Toggleable Spy Mode
+### 4. Toggleable Spy Mode & Commands
 Staff members can toggle Spy mode to monitor live activity in real-time across the network.
 - `/spy chat` - Toggle global chat messages spy.
 - `/spy cmd` - Toggle global command usage spy.
 - `/spy sw` - Toggle server switches/movement spy.
+- `/spy reload` or `/spyreload` - Reload `config.yml` and `messages.yml` configurations instantly.
+
+### 5. Advanced Color & Formatting Support
+Seamlessly supports both MiniMessage and Legacy color formatting together:
+- **MiniMessage:** `<pink>`, `<red>`, `<gold>`, `<bold>`, `<gradient:#ff0000:#00ff00>`, `<rainbow>`, etc.
+- **Legacy Codes:** `&a`, `&c`, `&d`, `&l`, `&pink`, etc.
+- **Hex Colors:** `&#ffc0cb`, `&#FFAA00`, `<#ffc0cb>`, etc.
 
 ## Permissions
 
@@ -31,6 +38,7 @@ Each feature is controlled by a specific permission node:
 - `nedayazady.spy.chat` - Access to `/spy chat` and receiving global chat logs.
 - `nedayazady.spy.cmd` - Access to `/spy cmd` and receiving global command logs.
 - `nedayazady.spy.sw` - Access to `/spy sw` and receiving connection/movement logs.
+- `spy.nedayazady.reload` - Access to `/spyreload` and `/spy reload` to reload configurations.
 
 ## Building from source
 

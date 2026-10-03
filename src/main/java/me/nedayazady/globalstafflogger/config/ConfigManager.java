@@ -22,16 +22,30 @@ public class ConfigManager {
     }
 
     public void loadConfigs() {
-        if (!Files.exists(dataDirectory)) {
-            try {
-                Files.createDirectories(dataDirectory);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        reloadConfigs();
+    }
 
-        configNode = loadConfig("config.yml");
-        messagesNode = loadConfig("messages.yml");
+    public boolean reloadConfigs() {
+        try {
+            if (!Files.exists(dataDirectory)) {
+                Files.createDirectories(dataDirectory);
+            }
+
+            CommentedConfigurationNode newConfig = loadConfig("config.yml");
+            CommentedConfigurationNode newMessages = loadConfig("messages.yml");
+
+            if (newConfig != null) {
+                this.configNode = newConfig;
+            }
+            if (newMessages != null) {
+                this.messagesNode = newMessages;
+            }
+
+            return newConfig != null && newMessages != null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private CommentedConfigurationNode loadConfig(String fileName) {
@@ -63,6 +77,9 @@ public class ConfigManager {
 
     // Config Methods
     public List<String> getExcludedCommands() {
+        if (configNode == null) {
+            return Collections.emptyList();
+        }
         try {
             return configNode.node("excluded-commands").getList(String.class, Collections.emptyList());
         } catch (Exception e) {
@@ -71,11 +88,19 @@ public class ConfigManager {
     }
 
     public String getConsoleLogPrefix() {
-        return configNode.node("console-log-prefix").getString("[GlobalStaffLogger]");
+        if (configNode == null) {
+            return "[GlobalStaffLogger]";
+        }
+        String prefix = configNode.node("console-log-prefix").getString("[GlobalStaffLogger]");
+        return prefix != null ? prefix : "[GlobalStaffLogger]";
     }
 
     // Messages Methods
     public String getMessage(String path) {
-        return messagesNode.node((Object[]) path.split("\\.")).getString("");
+        if (messagesNode == null) {
+            return "";
+        }
+        String msg = messagesNode.node((Object[]) path.split("\\.")).getString("");
+        return msg != null ? msg : "";
     }
 }

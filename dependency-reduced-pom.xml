@@ -4,7 +4,7 @@
   <groupId>me.nedayazady</groupId>
   <artifactId>GlobalStaffLogger</artifactId>
   <name>GlobalStaffLogger</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.2</version>
   <description>A high-performance logging plugin developed specifically for the Velocity Proxy to monitor player activities globally.</description>
   <build>
     <plugins>
@@ -60,6 +60,26 @@
       <artifactId>velocity-api</artifactId>
       <version>3.3.0-SNAPSHOT</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.10.2</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>junit-jupiter-api</artifactId>
+          <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>junit-jupiter-params</artifactId>
+          <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>junit-jupiter-engine</artifactId>
+          <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
   <properties>

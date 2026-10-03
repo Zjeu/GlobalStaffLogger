@@ -6,6 +6,10 @@ import me.nedayazady.globalstafflogger.config.ConfigManager;
 import me.nedayazady.globalstafflogger.manager.SpyManager;
 import me.nedayazady.globalstafflogger.utils.ColorUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class SpyCommand implements SimpleCommand {
 
     private final SpyManager spyManager;
@@ -18,23 +22,43 @@ public class SpyCommand implements SimpleCommand {
 
     @Override
     public void execute(Invocation invocation) {
+        String[] args = invocation.arguments();
+
+        if (args.length == 0) {
+            sendMessage(invocation, configManager.getMessage("usage"));
+            return;
+        }
+
+        String subCommand = args[0].toLowerCase();
+
+        // Allow reload from console or players with permission
+        if (subCommand.equals("reload")) {
+            if (invocation.source().hasPermission("spy.nedayazady.reload") ||
+                invocation.source().hasPermission("nedayazady.spy.reload")) {
+                boolean success = configManager.reloadConfigs();
+                if (success) {
+                    String msg = configManager.getMessage("reload-success");
+                    sendMessage(invocation, msg.isEmpty() ? "&aConfiguration and messages have been reloaded successfully." : msg);
+                } else {
+                    String msg = configManager.getMessage("reload-fail");
+                    sendMessage(invocation, msg.isEmpty() ? "&cFailed to reload configuration. Please check console logs." : msg);
+                }
+            } else {
+                sendMessage(invocation, configManager.getMessage("no-permission"));
+            }
+            return;
+        }
+
+        // Other subcommands are player-only
         if (!(invocation.source() instanceof Player)) {
             sendMessage(invocation, configManager.getMessage("only-players"));
             return;
         }
 
         Player player = (Player) invocation.source();
-        String[] args = invocation.arguments();
-
-        if (args.length == 0) {
-            sendMessage(player, configManager.getMessage("usage"));
-            return;
-        }
-
-        String type = args[0].toLowerCase();
         boolean enabled = false;
 
-        switch (type) {
+        switch (subCommand) {
             case "chat":
                 if (player.hasPermission("nedayazady.spy.chat")) {
                     spyManager.toggleChatSpy(player.getUniqueId());
@@ -83,11 +107,37 @@ public class SpyCommand implements SimpleCommand {
         String prefix = configManager.getMessage("prefix");
         player.sendMessage(ColorUtils.parse(prefix + message));
     }
-    
+
     @Override
     public boolean hasPermission(Invocation invocation) {
-        return invocation.source().hasPermission("nedayazady.spy.chat") || 
-               invocation.source().hasPermission("nedayazady.spy.cmd") || 
-               invocation.source().hasPermission("nedayazady.spy.sw");
+        return invocation.source().hasPermission("nedayazady.spy.chat") ||
+               invocation.source().hasPermission("nedayazady.spy.cmd") ||
+               invocation.source().hasPermission("nedayazady.spy.sw") ||
+               invocation.source().hasPermission("spy.nedayazady.reload") ||
+               invocation.source().hasPermission("nedayazady.spy.reload");
+    }
+
+    @Override
+    public List<String> suggest(Invocation invocation) {
+        String[] args = invocation.arguments();
+        if (args.length <= 1) {
+            String current = args.length == 0 ? "" : args[0].toLowerCase();
+            List<String> suggestions = new ArrayList<>();
+            if (invocation.source().hasPermission("nedayazady.spy.chat") && "chat".startsWith(current)) {
+                suggestions.add("chat");
+            }
+            if (invocation.source().hasPermission("nedayazady.spy.cmd") && "cmd".startsWith(current)) {
+                suggestions.add("cmd");
+            }
+            if (invocation.source().hasPermission("nedayazady.spy.sw") && "sw".startsWith(current)) {
+                suggestions.add("sw");
+            }
+            if ((invocation.source().hasPermission("spy.nedayazady.reload") ||
+                 invocation.source().hasPermission("nedayazady.spy.reload")) && "reload".startsWith(current)) {
+                suggestions.add("reload");
+            }
+            return suggestions;
+        }
+        return Collections.emptyList();
     }
 }

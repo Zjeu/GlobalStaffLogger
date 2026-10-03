@@ -1,16 +1,20 @@
 # GlobalStaffLogger Messages Configuration
-# Use MiniMessage format (<red>, <bold>) OR Legacy format (&c, &l) OR Hex (&#RRGGBB):
+# Supports MiniMessage format (<red>, <bold>, <pink>, <gradient:...>) OR Legacy format (&c, &l, &d) OR Hex (&#RRGGBB, <#RRGGBB>):
 # For MiniMessage help see: https://docs.advntr.dev/minimessage/format.html
 
 prefix: "&8[&6Spy&8] "
 
 # Spy command messages
-usage: "&cUsage: /spy <chat|cmd|sw>"
+usage: "&cUsage: /spy <chat|cmd|sw|reload>"
 no-permission: "&cYou do not have permission to use this command."
 only-players: "&cOnly players can use this command."
 
 spy-enabled: "&a{type} spy is now enabled."
 spy-disabled: "&c{type} spy is now disabled."
+
+# Reload command messages
+reload-success: "&aConfiguration and messages have been reloaded successfully."
+reload-fail: "&cFailed to reload configuration. Please check console logs."
 
 # Spy format messages
 # Placeholders: {player}, {server}, {message}, {command}, {previous_server}, {new_server}
